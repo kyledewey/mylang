@@ -8,7 +8,7 @@ num is a Number
 type ::= `int` | `bool`
 vardec ::= `(` `vardec` type var expression `)`
 expression ::= num | `true` | `false` | var |
-                       `(` op expression expression `)`
+               `(` op expression expression `)`
 loop ::= `(` `while` expression statement `)`
 assign ::= `(` `=` var expression `)`
 statement ::= vardec | loop | assign
@@ -41,3 +41,28 @@ Possible Tokens:
 - LogicalOrToken: 12
 - LessThanToken: 13
 
+## AST Definition ##
+
+interface Type
+  - class IntType: 0
+  - class BoolType: 1
+
+interface Stmt
+  - class VardecStmt
+  - class WhileStmt
+  - class AssignStmt
+
+interface Exp
+  - class NumberLiteralExp
+  - class BooleanLiteralExp
+  - class VariableExp
+  - class BinaryOperatorExp
+
+interface Op
+  - class PlusOp: 2
+  - class MinusOp: 3
+  - class LogicalAndOp: 4
+  - class LogicalOrOp: 5
+  - class LessThanOp: 6
+
+class Program
