@@ -3,16 +3,16 @@ package mylang.parser;
 import java.util.List;
 
 public class Program {
-    public final List<Stmt> statements;
+    public final List<Stmt> stmts;
 
-    public Program(final List<Stmt> statements) {
-        this.statements = statements;
+    public Program(final List<Stmt> stmts) {
+        this.stmts = stmts;
     }
 
     @Override
     public boolean equals(final Object other) {
         if (other instanceof Program) {
-            return statements.equals(((Program)other).statements);
+            return stmts.equals(((Program)other).stmts);
         } else {
             return false;
         }
@@ -20,11 +20,11 @@ public class Program {
 
     @Override
     public int hashCode() {
-        return statements.hashCode();
+        return stmts.hashCode();
     }
 
     @Override
     public String toString() {
-        return "Program(" + statements.toString() + ")";
+        return "Program(" + stmts.toString() + ")";
     }
 }
