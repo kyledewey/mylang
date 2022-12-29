@@ -40,23 +40,10 @@ public class Parser {
         }
     } // parseProgram
     
-    // program ::= statement*
-    // program ::= epsilon | statement program
-    public ParseResult<Program> parseProgram(int position) throws ParseException {
-        final List<Stmt> stmts = new ArrayList<Stmt>();
-        boolean shouldRun = true;
-        while (shouldRun) {
-            try {
-                final ParseResult<Stmt> stmt = parseStmt(position);
-                position = stmt.nextPosition;
-                stmts.add(stmt.result);
-            } catch (final ParseException e) {
-                shouldRun = false;
-            }
-        }
-
-        return new ParseResult<Program>(new Program(stmts),
-                                        position);
+    // program ::= statement
+    public ParseResult<Program> parseProgram(final int position) throws ParseException {
+        final ParseResult<Stmt> stmt = parseStmt(position);
+        return new ParseResult<Program>(new Program(stmt.result), stmt.nextPosition);
     } // parseProgram
     
     // expression ::= num | `true` | `false` | var |
@@ -121,6 +108,35 @@ public class Parser {
             throw new ParseException("Expected variable; received: " + token.toString());
         }
     } // parseVariable
+
+    // print ::= `(` `print` expression `)`
+    public ParseResult<Stmt> parsePrint(final int position) throws ParseException {
+        assertTokenIs(position, new LeftParenToken());
+        assertTokenIs(position + 1, new PrintToken());
+        final ParseResult<Exp> exp = parseExp(position + 2);
+        assertTokenIs(exp.nextPosition, new RightParenToken());
+        return new ParseResult<Stmt>(new PrintStmt(exp.result), exp.nextPosition + 1);
+    }
+
+    // progn ::= `(` `progn` statement* `)`
+    public ParseResult<Stmt> parseProgn(int position) throws ParseException {
+        assertTokenIs(position, new LeftParenToken());
+        assertTokenIs(position + 1, new PrognToken());
+        final List<Stmt> stmts = new ArrayList<Stmt>();
+        boolean shouldRun = true;
+        position += 2;
+        while (shouldRun) {
+            try {
+                final ParseResult<Stmt> stmt = parseStmt(position);
+                stmts.add(stmt.result);
+                position = stmt.nextPosition;
+            } catch (final ParseException e) {
+                shouldRun = false;
+            }
+        }
+        assertTokenIs(position, new RightParenToken());
+        return new ParseResult<Stmt>(new PrognStmt(stmts), position + 1);
+    }
     
     // assign ::= `(` `=` var expression `)`
     public ParseResult<Stmt> parseAssign(final int position) throws ParseException {
@@ -168,7 +184,15 @@ public class Parser {
             try {
                 return parseLoop(position);
             } catch (final ParseException e2) {
-                return parseAssign(position);
+                try {
+                    return parseAssign(position);
+                } catch (final ParseException e3) {
+                    try {
+                        return parsePrint(position);
+                    } catch (final ParseException e4) {
+                        return parseProgn(position);
+                    }
+                }
             }
         }
     } // parseStmt

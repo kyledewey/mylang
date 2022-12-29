@@ -41,7 +41,7 @@ public class TypecheckerTest {
                                  new BinaryOperatorExp(new PlusOp(),
                                                        new VariableExp(new Variable("x")),
                                                        new VariableExp(new Variable("x")))));
-        Typechecker.typecheckProgram(new Program(stmts));
+        Typechecker.typecheckProgram(new Program(new PrognStmt(stmts)));
     }
 
     // (vardec int x 0)
@@ -60,7 +60,7 @@ public class TypecheckerTest {
                                                new BinaryOperatorExp(new PlusOp(),
                                                                      new VariableExp(new Variable("x")),
                                                                      new NumberLiteralExp(1)))));
-        Typechecker.typecheckProgram(new Program(stmts));
+        Typechecker.typecheckProgram(new Program(new PrognStmt(stmts)));
     }
 
     // - Variable not in scope
@@ -71,7 +71,7 @@ public class TypecheckerTest {
         stmts.add(new VardecStmt(new IntType(),
                                  new Variable("x"),
                                  new VariableExp(new Variable("y"))));
-        Typechecker.typecheckProgram(new Program(stmts));
+        Typechecker.typecheckProgram(new Program(new PrognStmt(stmts)));
     }
 
     // - Expression not of correct type
@@ -82,7 +82,7 @@ public class TypecheckerTest {
         stmts.add(new VardecStmt(new IntType(),
                                  new Variable("x"),
                                  new BooleanLiteralExp(true)));
-        Typechecker.typecheckProgram(new Program(stmts));
+        Typechecker.typecheckProgram(new Program(new PrognStmt(stmts)));
     }
 
     // -Boolean and
@@ -95,7 +95,7 @@ public class TypecheckerTest {
                                  new BinaryOperatorExp(new LogicalAndOp(),
                                                        new BooleanLiteralExp(true),
                                                        new BooleanLiteralExp(false))));
-        Typechecker.typecheckProgram(new Program(stmts));
+        Typechecker.typecheckProgram(new Program(new PrognStmt(stmts)));
     }
 
     // -Assignment to a variable that doesn't exist
@@ -105,6 +105,6 @@ public class TypecheckerTest {
         final List<Stmt> stmts = new ArrayList<Stmt>();
         stmts.add(new AssignStmt(new Variable("x"),
                                  new BooleanLiteralExp(true)));
-        Typechecker.typecheckProgram(new Program(stmts));
+        Typechecker.typecheckProgram(new Program(new PrognStmt(stmts)));
     }        
 }

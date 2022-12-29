@@ -102,6 +102,23 @@ public class Typechecker {
             throw new TypeErrorException("Variable not in scope: " + stmt.variable.toString());
         }
     } // typecheckAssign
+
+    public static Map<Variable, Type> typecheckPrint(final PrintStmt stmt,
+                                                     final Map<Variable, Type> typeEnv)
+        throws TypeErrorException {
+        typecheckExp(stmt.exp, typeEnv);
+        return typeEnv;
+    }
+
+    public static Map<Variable, Type> typecheckProgn(final PrognStmt progn,
+                                                     final Map<Variable, Type> initialTypeEnv)
+        throws TypeErrorException {
+        Map<Variable, Type> typeEnv = initialTypeEnv;
+        for (final Stmt stmt : progn.stmts) {
+            typeEnv = typecheckStmt(stmt, typeEnv);
+        }
+        return initialTypeEnv;
+    }
     
     public static Map<Variable, Type> typecheckStmt(final Stmt stmt,
                                                     final Map<Variable, Type> typeEnv)
@@ -112,6 +129,10 @@ public class Typechecker {
             return typecheckWhile((WhileStmt)stmt, typeEnv);
         } else if (stmt instanceof AssignStmt) {
             return typecheckAssign((AssignStmt)stmt, typeEnv);
+        } else if (stmt instanceof PrintStmt) {
+            return typecheckPrint((PrintStmt)stmt, typeEnv);
+        } else if (stmt instanceof PrognStmt) {
+            return typecheckProgn((PrognStmt)stmt, typeEnv);
         } else {
             assert(false);
             throw new TypeErrorException("Unrecognized statement: " + stmt.toString());
@@ -119,9 +140,6 @@ public class Typechecker {
     } // typecheckStmt
 
     public static void typecheckProgram(final Program program) throws TypeErrorException {
-        Map<Variable, Type> typeEnv = new HashMap<Variable, Type>();
-        for (final Stmt stmt : program.stmts) {
-            typeEnv = typecheckStmt(stmt, typeEnv);
-        }
+        typecheckStmt(program.stmt, new HashMap<Variable, Type>());
     } // typecheckProgram
 } // Typechecker

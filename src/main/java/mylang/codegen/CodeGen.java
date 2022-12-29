@@ -84,6 +84,24 @@ public class CodeGen {
         writer.write(" }");
     }
 
+    // `(` `print` expression `)`
+    // console.log(expression);
+    public void writePrint(final PrintStmt stmt) throws IOException, CodeGenException {
+        writer.write("console.log(");
+        writeExp(stmt.exp);
+        writer.write(");");
+    }
+
+    // `(` `progn` statement* `)`
+    // { statement* }
+    public void writeProgn(final PrognStmt progn) throws IOException, CodeGenException {
+        writer.write("{ ");
+        for (final Stmt stmt : progn.stmts) {
+            writeStmt(stmt);
+        }
+        writer.write(" }");
+    }
+    
     // variable = expression;
     public void writeAssign(final AssignStmt stmt) throws IOException, CodeGenException {
         writer.write(stmt.variable.name);
@@ -99,6 +117,10 @@ public class CodeGen {
             writeWhile((WhileStmt)stmt);
         } else if (stmt instanceof AssignStmt) {
             writeAssign((AssignStmt)stmt);
+        } else if (stmt instanceof PrintStmt) {
+            writePrint((PrintStmt)stmt);
+        } else if (stmt instanceof PrognStmt) {
+            writeProgn((PrognStmt)stmt);
         } else {
             assert(false);
             throw new CodeGenException("Unknown statement: " + stmt.toString());
@@ -106,9 +128,7 @@ public class CodeGen {
     }
     
     public void writeProgram(final Program program) throws IOException, CodeGenException {
-        for (final Stmt stmt : program.stmts) {
-            writeStmt(stmt);
-        }
+        writeStmt(program.stmt);
     }
 
     public void close() throws IOException {

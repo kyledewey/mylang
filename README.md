@@ -11,9 +11,11 @@ expression ::= num | `true` | `false` | var |
                `(` op expression expression `)`
 loop ::= `(` `while` expression statement `)`
 assign ::= `(` `=` var expression `)`
-statement ::= vardec | loop | assign
+print ::= `(` `print` expression `)`
+progn ::= `(` `progn` statement* `)`
+statement ::= vardec | loop | assign | print | progn
 op ::= `+` | `-` | `&&` | `||` | `<`
-program ::= statement*
+program ::= statement
 ```
 
 Object language (our language): MyLang
@@ -40,6 +42,8 @@ Possible Tokens:
 - LogicalAndToken: 11
 - LogicalOrToken: 12
 - LessThanToken: 13
+- PrintToken: 14
+- PrognToken: 15
 
 ## AST Definition ##
 
@@ -51,6 +55,8 @@ interface Stmt
   - class VardecStmt
   - class WhileStmt
   - class AssignStmt
+  - class PrintStmt
+  - class PrognStmt
 
 interface Exp
   - class NumberLiteralExp

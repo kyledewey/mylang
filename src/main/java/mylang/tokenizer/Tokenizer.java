@@ -2,8 +2,21 @@ package mylang.tokenizer;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Tokenizer {
+    public static final Map<String, Token> RESERVED_WORDS = new HashMap<String, Token>() {{
+            put("int", new IntToken());
+            put("bool", new BoolToken());
+            put("vardec", new VardecToken());
+            put("true", new TrueToken());
+            put("false", new FalseToken());
+            put("while", new WhileToken());
+            put("print", new PrintToken());
+            put("progn", new PrognToken());
+        }};
+
     public static final SymbolPair[] SYMBOLS = new SymbolPair[] {
         new SymbolPair("(", new LeftParenToken()),
         new SymbolPair(")", new RightParenToken()),
@@ -55,18 +68,8 @@ public class Tokenizer {
                 position++;
             }
 
-            if (name.equals("int")) {
-                return new IntToken();
-            } else if (name.equals("bool")) {
-                return new BoolToken();
-            } else if (name.equals("vardec")) {
-                return new VardecToken();
-            } else if (name.equals("true")) {
-                return new TrueToken();
-            } else if (name.equals("false")) {
-                return new FalseToken();
-            } else if (name.equals("while")) {
-                return new WhileToken();
+            if (RESERVED_WORDS.containsKey(name)) {
+                return RESERVED_WORDS.get(name);
             } else {
                 return new IdentifierToken(name);
             }

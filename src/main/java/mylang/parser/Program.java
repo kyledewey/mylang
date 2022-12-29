@@ -1,30 +1,25 @@
 package mylang.parser;
 
-import java.util.List;
-
 public class Program {
-    public final List<Stmt> stmts;
+    public final Stmt stmt;
 
-    public Program(final List<Stmt> stmts) {
-        this.stmts = stmts;
+    public Program(final Stmt stmt) {
+        this.stmt = stmt;
     }
 
     @Override
     public boolean equals(final Object other) {
-        if (other instanceof Program) {
-            return stmts.equals(((Program)other).stmts);
-        } else {
-            return false;
-        }
+        return (other instanceof Program &&
+                stmt.equals(((Program)other).stmt));
     }
 
     @Override
     public int hashCode() {
-        return stmts.hashCode();
+        return stmt.hashCode();
     }
 
     @Override
     public String toString() {
-        return "Program(" + stmts.toString() + ")";
+        return "Program(" + stmt.toString() + ")";
     }
 }

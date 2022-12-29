@@ -45,14 +45,15 @@ public class ParserTest {
                      parser.parseVardec(0));
     }
 
-    // (vardec int x 0)
-    // (while (< x 10)
-    //   (= x (+ x 1)))
+    // (progn
+    //   (vardec int x 0)
+    //   (while (< x 10)
+    //     (= x (+ x 1))))
     @Test
     public void testParseProgram() throws TokenizerException, ParseException {
-        final Token[] tokens = Tokenizer.tokenize("(vardec int x 0)\n" +
+        final Token[] tokens = Tokenizer.tokenize("(progn (vardec int x 0)\n" +
                                                   "(while (< x 10)\n" +
-                                                  "  (= x (+ x 1)))\n");
+                                                  "  (= x (+ x 1))))\n");
         final List<Stmt> stmts = new ArrayList<Stmt>();
         stmts.add(new VardecStmt(new IntType(),
                                  new Variable("x"),
@@ -66,8 +67,8 @@ public class ParserTest {
                                                                      new NumberLiteralExp(1)))));
         
         final Parser parser = new Parser(tokens);
-        assertEquals(new ParseResult<Program>(new Program(stmts),
-                                              23),
+        assertEquals(new ParseResult<Program>(new Program(new PrognStmt(stmts)),
+                                              26),
                      parser.parseProgram(0));
     }
 }
