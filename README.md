@@ -85,3 +85,9 @@ class Program
 - exp1 || exp2 => bool, exp1: bool, exp2: bool
 - exp1 < exp => bool, exp1: int, exp2: int
 - program: all statements are well-typed
+
+## Running the Code ##
+
+```console
+mvn exec:java -Dexec.mainClass="mylang.MyLang" -Dexec.args="input_program.mylang output_program.js"
+```
